@@ -28,9 +28,10 @@ class ViewController: UIViewController {
 
     @IBAction func Save_btnClicked(sender: UIButton) {
         
-        let appDeleg:AppDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
+        let appDeleg:AppDelegate = UIApplication.shared.delegate as! AppDelegate
         let context:NSManagedObjectContext = appDeleg.managedObjectContext
-        let newUser = NSEntityDescription.insertNewObjectForEntityForName("UserInfo", inManagedObjectContext: context)
+        let entity = NSEntityDescription.entity(forEntityName: "UserInfo", in: context)
+        let newUser = NSManagedObject(entity: entity!, insertInto: context)
         newUser.setValue(self.firstName.text, forKey: "firstName")
         newUser.setValue(self.secondName.text, forKey: "lastName")
         do{
@@ -39,18 +40,18 @@ class ViewController: UIViewController {
             print("error in saving data")
         }
     }
-    @IBAction func Search_btnClicked(sender: UIButton) {
+    @IBAction func Search_btnClicked(_ sender: UIButton) {
        
-        let appDeleg:AppDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
+        let appDeleg:AppDelegate = UIApplication.shared.delegate as! AppDelegate
         let context:NSManagedObjectContext = appDeleg.managedObjectContext
-        let request = NSFetchRequest(entityName: "UserInfo")
+        let request = NSFetchRequest<NSFetchRequestResult>(entityName: "UserInfo")
         let searchString = self.searchText.text!
         request.predicate = NSPredicate(format: "firstName == '\(searchString)'")
         do{
-            let results = try context.executeFetchRequest(request)
+            let results = try context.fetch(request) as! [NSManagedObject]
             if results.count > 0 {
-                let first = results[0].valueForKey("firstName") as! String
-                let last = results[0].valueForKey("lastName")  as! String
+                let first = results[0].value(forKey: "firstName") as! String
+                let last = results[0].value(forKey: "lastName")  as! String
                 resultLabel.text = first + " " + last
             }else{
                 resultLabel.text = "No Result Found"
