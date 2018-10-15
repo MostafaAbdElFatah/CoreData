@@ -26,7 +26,7 @@ class ViewController: UIViewController {
         // Dispose of any resources that can be recreated.
     }
 
-    @IBAction func Save_btnClicked(sender: UIButton) {
+    @IBAction func Save_btnClicked(_ sender: UIButton) {
         
         let appDeleg:AppDelegate = UIApplication.shared.delegate as! AppDelegate
         let context:NSManagedObjectContext = appDeleg.managedObjectContext
